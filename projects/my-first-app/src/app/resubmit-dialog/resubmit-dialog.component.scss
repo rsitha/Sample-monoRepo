@@ -1,0 +1,20 @@
+@use '@angular/material' as mat;
+
+mat-dialog-content {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+
+  .selection-box {
+    display: flex;
+    flex-direction: column;
+
+    mat-button-toggle-group {
+      width: fit-content;
+    }
+
+    .comment-quote {
+      border-radius: 16px;
+      padding: 16px;
+      background: mat.get-color-from-palette(mat.$grey-palette, 200);
+    }
+  }
+}

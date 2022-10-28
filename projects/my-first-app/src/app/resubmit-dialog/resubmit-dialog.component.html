@@ -1,0 +1,58 @@
+<h2 mat-dialog-title>
+  A report was previously submitted for this PWNHealth order. If you are an
+  admin, please select a stamp option to submit.
+</h2>
+<mat-dialog-content>
+  <div class="selection-box">
+    <mat-button-toggle-group [(ngModel)]="selectedStamp">
+      <mat-button-toggle [value]="Stamp.STAMP_AMENDED">Amend</mat-button-toggle>
+      <mat-button-toggle [value]="Stamp.STAMP_CORRECTED">Correct</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <div *ngIf="previousResult">
+      <!-- LINT.IfChange -->
+      <p>This comment will be appended to the report:</p>
+
+      <p class="comment-quote">
+        <span *ngIf="selectedStamp === Stamp.STAMP_AMENDED">
+          This is an Amended Report. The "
+          <mat-form-field>
+            <input matInput autocomplete="off" placeholder="e.g. patient name, birth date" [(ngModel)]="changedFields">
+          </mat-form-field>
+          " has been updated. No test result information has changed.
+          Please disregard the previous report issued on {{previousResultDate}}.
+        </span>
+
+        <span *ngIf="selectedStamp === Stamp.STAMP_CORRECTED">
+          On {{previousResultDate}}, an incorrect report of "{{previousResultString}}" was submitted.
+          This report changes the incorrect result and provides the corrected result of "{{newResultString}}", {{today}}.
+          Please disregard the previous report submitted on {{previousResultDate}}.
+          <br />
+          -
+          <mat-form-field>
+            <input matInput autocomplete="off" placeholder="e.g. TJB" [(ngModel)]="userInitials">
+          </mat-form-field>
+          , {{today}}.
+        </span>
+      </p>
+      <!-- LINT.ThenChange(//depot/google3/lifescience/lims/clinical/results/dal/action/action.go) -->
+
+      <p>View the previously submitted report <a target="_blank" [routerLink]="['report', previousResult.id]">here</a>.</p>
+    </div>
+  </div>
+
+  <div *ngIf="submittedResultIds.length > 1">
+    All previous reports:
+    <ul>
+      <li *ngFor="let id of submittedResultIds">
+        <a target="_blank" [routerLink]="['report', id]">
+          {{id}}
+        </a>
+      </li>
+    </ul>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>CANCEL</button>
+  <button mat-button [disabled]="!canSubmit" [mat-dialog-close]="output">STAMP AND RESUBMIT</button>
+</mat-dialog-actions>
